@@ -1,0 +1,471 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Paper Trading Client",
+    "description": "This is a API designed for stock paper trading client. Authendicated users can get the latest price of stock, portfolio and cash info.",
+    "contact": {
+      "email": "haoran@byu.edu"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.1"
+  },
+  "servers": [
+    {
+      "url": "https://virtserver.swaggerhub.com/canp0y/stock/1.0.1",
+      "description": "SwaggerHub API Auto Mocking"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Guest",
+      "description": "Operations for Guest"
+    },
+    {
+      "name": "Developers",
+      "description": "Secured Admin-only calls"
+    },
+    {
+      "name": "Users",
+      "description": "Operations available to users"
+    }
+  ],
+  "paths": {
+    "/stock": {
+      "get": {
+        "tags": [
+          "Guest"
+        ],
+        "summary": "Guest can check stock price and users ranking",
+        "description": "By calling this API, client will return the current price of stocks",
+        "operationId": "guestOper",
+        "parameters": [
+          {
+            "name": "stockName",
+            "in": "query",
+            "description": "pass an optional search string for looking up stocks",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "maximum number of records to return",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 50,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results success!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/stock"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unkown Error"
+          }
+        }
+      }
+    },
+    "/account/allUser/": {
+      "get": {
+        "tags": [
+          "Developers"
+        ],
+        "summary": "Represents am admin",
+        "description": "Developers can check all users",
+        "operationId": "admin_user",
+        "parameters": [
+          {
+            "name": "adminPass",
+            "in": "query",
+            "description": "password used to verify manager",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "maximum number of records to return",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 50,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/users"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/account/allUser/{id}": {
+      "get": {
+        "tags": [
+          "Developers"
+        ],
+        "summary": "Represents am admin",
+        "description": "Developers can check one specific user",
+        "operationId": "admin_user_id",
+        "parameters": [
+          {
+            "name": "adminPass",
+            "in": "query",
+            "description": "password used to verify manager",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int5"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/user"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wallet/{userName}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Check money",
+        "description": "for users to check their money",
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "description": "userName",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "password used to verify user",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/wallet"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "ERROR 400 - Bad Request"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/protfolio/{userName}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Check owned stocks",
+        "description": "Check Current Stocks that user have",
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "description": "userName",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "password used to verify user",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/protfolios"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "ERROR 400 - Bad Request"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trade/{userName}": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Put Orders",
+        "description": "Submit an order to trade paper stocks",
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "description": "userName",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "password used to verify user",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ticker",
+            "in": "query",
+            "description": "ticker to locate an stock",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "price",
+            "in": "query",
+            "description": "price put into the order",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Success 200 - Request Submit, please check your wallet to verify"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "ERROR 400 - Bad Request, please check cash remainning"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "users": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/user"
+        }
+      },
+      "user": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "example": 10086
+          },
+          "username": {
+            "type": "string",
+            "example": "canp0y"
+          }
+        }
+      },
+      "stock": {
+        "type": "object",
+        "properties": {
+          "stock_id": {
+            "type": "string",
+            "example": "10086"
+          },
+          "ticker": {
+            "type": "string",
+            "example": "AAPL"
+          },
+          "description": {
+            "type": "string",
+            "example": "APPLE Inc"
+          },
+          "mktvalue": {
+            "type": "number",
+            "example": 1800059740.56
+          },
+          "avgPrice": {
+            "type": "number",
+            "example": 146.23
+          }
+        }
+      },
+      "wallet": {
+        "type": "object",
+        "properties": {
+          "userid": {
+            "type": "integer",
+            "example": 10086
+          },
+          "username": {
+            "type": "string",
+            "example": "Username"
+          },
+          "cash": {
+            "type": "string",
+            "example": "100$"
+          },
+          "stockValue": {
+            "type": "string",
+            "example": "5000$"
+          },
+          "taotalMoney": {
+            "type": "string",
+            "example": "5100$"
+          }
+        }
+      },
+      "protfolios": {
+        "type": "object",
+        "properties": {
+          "userid": {
+            "type": "integer",
+            "example": 10086
+          },
+          "username": {
+            "type": "string",
+            "example": "Username"
+          },
+          "positions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/stock"
+            }
+          }
+        }
+      }
+    }
+  }
+}
